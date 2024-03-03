@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Example: Running a Maven build
+                // sh 'mvn clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                input('Do you want to proceed?')
+                // Example: Running unit tests
+                // sh 'mvn test'
+            }
+        }
+        stage('Test2') {
+            steps {
+                when {
+                    not {
+                        branch "main"
+                    }
+                }
+                steps {
+                    echo "Hello"
+                }
+                // Example: Running unit tests
+                // sh 'mvn test'
+            }
+        }
+        stage('Test') {
+            parallel {
+                stage('Unit Tets') {
+                    steps {
+                        echo "Running the unit test..."
+                        // Example: Running unit tests
+                        // sh 'mvn test'
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded yeah!'
+            // Example: Send a notification upon success
+            // mail to: 'team@example.com', subject: 'Pipeline Succeeded', body: 'Congratulations!'
+        }
+        failure {
+            echo 'Pipeline failed :('
+            // Example: Send a notification upon failure
+            // mail to: 'team@example.com', subject: 'Pipeline Failed', body: 'Please investigate.'
+        }
+    }
+}
